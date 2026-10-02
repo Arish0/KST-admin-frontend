@@ -1,0 +1,7 @@
+node_modules/
+out/
+.next/
+.wrangler/
+.dev.vars*
+.env*
+tsconfig.tsbuildinfo

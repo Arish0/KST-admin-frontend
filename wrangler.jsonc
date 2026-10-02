@@ -1,0 +1,21 @@
+{
+  "name": "kst-admin",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "services": [
+    {
+      "binding": "BACKEND",
+      "service": "kst-backend"
+    }
+  ],
+  "vars": {
+    "SITE_ROLE": "admin"
+  },
+  "account_id": "58cf4c0436d6ae15fcc2585cb8bf9c61"
+}
