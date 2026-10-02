@@ -86,11 +86,11 @@ Use these settings:
 | Root directory | repository root | repository root | repository root |
 | Production branch | `main` | `main` | `main` |
 | Build command | `npm run build` | leave empty | leave empty |
-| Deploy command | `npm run deploy` | `npm run deploy` | `npm run migrate && npm run deploy` |
+| Deploy command | `npm run deploy` | `npm run deploy` | `npm run deploy` |
 
 Install dependencies during builds. Use Node.js 22.14 or newer (set `NODE_VERSION` if needed). Keep both frontends' `BACKEND` service binding pointing to `kst-backend` in the same Cloudflare account. Keep the backend's D1 binding named `DB`. Do not put `ADMIN_PASSWORD_HASH` in a frontend or a build environment variable; it belongs in the backend's runtime Secrets.
 
-The first backend deployment must exist before either frontend deploys, because service bindings refer to that Worker by name. Each later push to `main` will deploy only the Worker associated with that repository. Check the build log after the first push. Keep preview branches disabled initially so development builds do not write to the production D1 database.
+The first backend deployment must exist before either frontend deploys, because service bindings refer to that Worker by name. Each later push to `main` will deploy only the Worker associated with that repository. Check the build log after the first push. Keep preview branches disabled initially so development builds do not write to the production D1 database. Apply future database schema migrations deliberately with `npm run migrate` using authentication that includes D1 write permission; the default Workers Builds token does not include that permission.
 
 ## 5. Attach the purchased customer domain
 
