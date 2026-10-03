@@ -15,12 +15,13 @@ export default {
    if(!admin)headers.delete('Cookie');
    if(!env.PROXY_SECRET)return Response.json({error:'The shop connection is not configured'},{status:503});
    headers.set('x-kst-proxy-token',env.PROXY_SECRET);
-   if(env.BACKEND)return env.BACKEND.fetch(new Request(request,{headers}));
+   const forwarded=new Request(request,{headers});
+   if(env.BACKEND){try{return await env.BACKEND.fetch(forwarded.clone());}catch{if(!env.BACKEND_URL)return Response.json({error:'The backend service is unreachable. Check the admin Worker service binding.'},{status:502});}}
    let backend;try{backend=new URL(env.BACKEND_URL);}catch{return Response.json({error:'The shop connection is not configured'},{status:503});}
    if(backend.protocol!=='https:')return Response.json({error:'The shop connection is not configured'},{status:503});
    backend.pathname=path;backend.search=url.search;
    headers.delete('Host');
-   return fetch(new Request(backend,new Request(request,{headers,redirect:'manual'})));
+   return fetch(new Request(backend,new Request(forwarded,{redirect:'manual'})));
   }
   if(!admin&&(path==='/admin'||path.startsWith('/admin/')))return new Response('Not found',{status:404});
   const response=await env.ASSETS.fetch(request),headers=new Headers(response.headers);
