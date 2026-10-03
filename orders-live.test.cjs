@@ -60,12 +60,12 @@ test('admin order card shows both contact numbers as call links',async()=>{
  assert.match(app.elements['#tab-content'].innerHTML,/tel:\+919123456780/);
 });
 
-test('prize settings show date and time pickers with a DD/MM/YY preview',async()=>{
- const offer={id:'diwali-special-prizes-2026',enabled:false,title:'Diwali Special Prizes',drawAt:'2026-11-08T09:30',terms:'Terms',gifts:[]};
+test('prize settings show an unrestricted time picker and a DD/MM/YY date preview',async()=>{
+ const offer={id:'diwali-special-prizes-2026',enabled:false,title:'Diwali Special Prizes',drawAt:'2026-11-08T23:45',terms:'Terms',gifts:[]};
  const app=harness([{status:200,body:{...base(),diwaliGifts:offer}}]);
  await app.hooks.load();app.hooks.setTab('diwali-gifts');app.hooks.render();
  const html=app.elements['#tab-content'].innerHTML;
  assert.match(html,/name="drawDate" type="date" value="2026-11-08"/);
- assert.match(html,/name="drawTime" type="time" value="09:30"/);
+ assert.match(html,/name="drawTime" type="time" value="23:45" step="60"/);
  assert.match(html,/Selected date: 08\/11\/26/);
 });
