@@ -33,12 +33,12 @@ test('new order appears automatically without a manual refresh',async()=>{
  assert.equal(app.renders,before+1);
 });
 
-test('background refresh leaves the current admin tab intact',async()=>{
+test('order polling pauses on tabs that do not show live orders or prize entries',async()=>{
  const app=harness([{status:200,body:base()},{status:200,body:{...base(),orders:[order]}}]);
  await app.hooks.load();app.hooks.setTab('products');const before=app.renders;
  await app.hooks.syncOrders();
  assert.equal(app.renders,before);
- assert.equal(app.stats[0].textContent,'1');
+ assert.equal(app.stats[0].textContent,'');
 });
 
 test('hidden admin tab waits until visible before refreshing',async()=>{
