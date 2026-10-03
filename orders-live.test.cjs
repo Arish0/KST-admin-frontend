@@ -60,6 +60,13 @@ test('admin order card shows both contact numbers as call links',async()=>{
  assert.match(app.elements['#tab-content'].innerHTML,/tel:\+919123456780/);
 });
 
+test('a server error shows a retry instead of replacing the admin with login',async()=>{
+ const app=harness([{status:500,body:{error:'Shop data is unavailable'}}]);
+ await assert.rejects(app.hooks.load(),/Shop data is unavailable/);
+ assert.match(app.content.innerHTML,/Could not load shop data/);
+ assert.match(app.content.innerHTML,/Retry loading/);
+});
+
 test('prize settings show an unrestricted time picker and a DD/MM/YY date preview',async()=>{
  const offer={id:'diwali-special-prizes-2026',enabled:false,title:'Diwali Special Prizes',drawAt:'2026-11-08T23:45',terms:'Terms',gifts:[]};
  const app=harness([{status:200,body:{...base(),diwaliGifts:offer}}]);
