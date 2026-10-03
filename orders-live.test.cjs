@@ -8,6 +8,7 @@ function harness(responses){
  const content={set innerHTML(value){this.value=value;renders++;},get innerHTML(){return this.value;}};
  const stats=[{textContent:''},{textContent:''},{textContent:''}];
  const document={
+  addEventListener(){},
   querySelector(selector){if(selector==='#admin-content')return content;if(selector==='#editor')return {open:false};return elements[selector]||=({hidden:false,innerHTML:'',textContent:'',classList:{add(){},remove(){}}});},
   querySelectorAll(){return stats;}
  };
@@ -16,7 +17,7 @@ function harness(responses){
   return {ok:result.status===200,status:result.status,json:async()=>result.body};
  }});
  const source=fs.readFileSync('public/admin.js','utf8').split("document.addEventListener('click'")[0];
- vm.runInContext(`${source}\nglobalThis.hooks={load,syncOrders,getOrders:()=>db?.orders,setTab:value=>tab=value};`,context);
+ vm.runInContext(`${source}\nglobalThis.hooks={load,render,syncOrders,getOrders:()=>db?.orders,setTab:value=>tab=value};`,context);
  return {hooks:context.hooks,content,stats,document,get renders(){return renders;},elements};
 }
 const base=()=>({products:[],bundles:[],settings:{},orders:[]});
@@ -57,4 +58,14 @@ test('admin order card shows both contact numbers as call links',async()=>{
  await app.hooks.load();
  assert.match(app.elements['#tab-content'].innerHTML,/tel:\+919876543210/);
  assert.match(app.elements['#tab-content'].innerHTML,/tel:\+919123456780/);
+});
+
+test('prize settings show date and time pickers with a DD/MM/YY preview',async()=>{
+ const offer={id:'diwali-special-prizes-2026',enabled:false,title:'Diwali Special Prizes',drawAt:'2026-11-08T09:30',terms:'Terms',gifts:[]};
+ const app=harness([{status:200,body:{...base(),diwaliGifts:offer}}]);
+ await app.hooks.load();app.hooks.setTab('diwali-gifts');app.hooks.render();
+ const html=app.elements['#tab-content'].innerHTML;
+ assert.match(html,/name="drawDate" type="date" value="2026-11-08"/);
+ assert.match(html,/name="drawTime" type="time" value="09:30"/);
+ assert.match(html,/Selected date: 08\/11\/26/);
 });
