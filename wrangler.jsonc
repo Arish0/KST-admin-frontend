@@ -17,5 +17,10 @@
   "vars": {
     "SITE_ROLE": "admin"
   },
+  "previews": {
+    "vars": {
+      "SITE_ROLE": "admin"
+    }
+  },
   "account_id": "58cf4c0436d6ae15fcc2585cb8bf9c61"
 }

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "node --check worker.mjs && node --check public/admin.js",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
