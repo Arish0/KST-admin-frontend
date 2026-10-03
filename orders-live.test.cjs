@@ -50,3 +50,11 @@ test('hidden admin tab waits until visible before refreshing',async()=>{
  await app.hooks.syncOrders();
  assert.equal(app.hooks.getOrders().length,1);
 });
+
+test('admin order card shows both contact numbers as call links',async()=>{
+ const withContacts={...order,mobile:'+919876543210',alternateMobile:'+919123456780'};
+ const app=harness([{status:200,body:{...base(),orders:[withContacts]}}]);
+ await app.hooks.load();
+ assert.match(app.elements['#tab-content'].innerHTML,/tel:\+919876543210/);
+ assert.match(app.elements['#tab-content'].innerHTML,/tel:\+919123456780/);
+});
