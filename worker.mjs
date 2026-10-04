@@ -29,7 +29,7 @@ export default {
   if(headers.get('Content-Type')?.includes('text/html')){
    const html=await response.text(),hashes=[];
    for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){if(match[1]){const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(match[1]));hashes.push(`'sha256-${btoa(String.fromCharCode(...new Uint8Array(digest)))}'`);}}
-   headers.set('Content-Security-Policy',`default-src 'self'; img-src 'self' https:; style-src 'self'; script-src 'self' ${hashes.join(' ')}; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'`);
+   headers.set('Content-Security-Policy',`default-src 'self'; img-src 'self' https:; media-src 'self' https: blob:; style-src 'self'; script-src 'self' ${hashes.join(' ')}; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'`);
    headers.set('Cache-Control','no-cache');headers.delete('Content-Length');headers.delete('ETag');
    return new Response(html,{status:response.status,headers});
   }
